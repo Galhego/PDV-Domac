@@ -1,4 +1,4 @@
-module org.example.pdvproject {
+module org.example.pdvteste {
     requires javafx.controls;
     requires javafx.fxml;
     requires javafx.web;
@@ -11,6 +11,6 @@ module org.example.pdvproject {
     requires eu.hansolo.tilesfx;
     requires com.almasb.fxgl.all;
 
-    opens org.example.pdvproject to javafx.fxml;
-    exports org.example.pdvproject;
+    opens org.example.pdvteste to javafx.fxml;
+    exports org.example.pdvteste;
 }
