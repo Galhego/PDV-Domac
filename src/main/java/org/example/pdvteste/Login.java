@@ -63,6 +63,15 @@ public class Login {
         Class.forName(driver);
         conn = DriverManager.getConnection(url, username, password);
 
+        String sql_create_table = "CREATE TABLE IF NOT EXISTS funcionarios ("
+                + "cd_funcionario INT AUTO_INCREMENT PRIMARY KEY, "
+                + "nm_funcionario VARCHAR(255) NOT NULL, "
+                + "cd_senha_funcionario VARCHAR(255) NOT NULL, "
+                + "is_Adm BOOLEAN NOT NULL DEFAULT FALSE"
+                + ");";
+
+        stmt.executeUpdate(sql_create_table);
+
         // Consulta SQL para buscar o usuário
         String sql = "SELECT nome, id, senha FROM usuario WHERE email = ?";
         ps = conn.prepareStatement(sql);
