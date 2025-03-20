@@ -38,9 +38,6 @@ O 'Meu Coxinha' é um software feito para ser um sistema de PDV para a empresa '
 - ***[MySQL Workbench]***
 
 ### **Como Executar o Projeto:**
-- Baixe o projeto inteiro em sua máquina clique em **<>Code**, **Download ZIP** e descompacte o arquivo. Dentro do Netbeans importe o projeto descompactado clicando em **File**, **Open File** e selecionando a pasta do projeto. Clique no projeto com o botão direito 
-  do mouse, vá em **Properties**, **run**, adicione e baixe o servidor **Glassfish 8.0.0**, logo após aperte **shift+F11** para limpar, construir e baixar as dependências necessárias. Após verificar que as dependências foram baixadas com sucesso aperte **F6** para 
-  rodar o projeto.
 
 ---
 
