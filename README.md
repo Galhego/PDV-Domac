@@ -18,6 +18,13 @@ O 'Meu Coxinha' é um software feito para ser um sistema de PDV para a empresa '
 ---
 
 ## **Funcionalidades**
+- ***Gestão de Vendas e Caixa***: [Processamento rápido de pedidos e pagamentos, registro de transações e fechamento de caixa]
+- ***Gestão de Estoque***: [Monitoramento de insumos e produtos prontos, com alertas de reposição]
+- ***Gestão de Comandas e Pedidos***: [Acompanhamento do status dos pedidos em tempo real e integração com a cozinha]
+- ***Relatórios e Análises***: [Relatórios detalhados sobre vendas, estoque e fluxo de caixa para acompanhamento do desempenho da unidade]
+- ***Segurança e Acessibilidade***: [Controle de usuários com diferentes níveis de acesso e proteção de dados sensíveis]
+
+
   
 ---
 
@@ -38,7 +45,7 @@ O 'Meu Coxinha' é um software feito para ser um sistema de PDV para a empresa '
 - ***[MySQL Workbench]***
 
 ### **Como Executar o Projeto:**
-
+- Certifique-se de ter instalados todos os programas e respectivas versões do mesmo descritos acima. Importe o projeto para a IDE IntelliJ e clique em "build and run".
 ---
 
   ## Autores
