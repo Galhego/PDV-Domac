@@ -63,26 +63,26 @@ public class Login {
         Class.forName(driver);
         conn = DriverManager.getConnection(url, username, password);
 
-        String sql_create_table = "CREATE TABLE IF NOT EXISTS funcionarios ("
+        /*String sql_create_table = "CREATE TABLE IF NOT EXISTS funcionarios ("
                 + "cd_funcionario INT AUTO_INCREMENT PRIMARY KEY, "
                 + "nm_funcionario VARCHAR(255) NOT NULL, "
                 + "cd_senha_funcionario VARCHAR(255) NOT NULL, "
                 + "is_Adm BOOLEAN NOT NULL DEFAULT FALSE"
                 + ");";
 
-        stmt.executeUpdate(sql_create_table);
+        stmt.executeUpdate(sql_create_table);*/
 
         // Consulta SQL para buscar o usuário
-        String sql = "SELECT nome, id, senha FROM usuario WHERE email = ?";
+        String sql = "SELECT nm_funcionario, cd_funcionario, cd_senha_funcionario FROM funcionarios WHERE nm_funcionario = ?";
         ps = conn.prepareStatement(sql);
         ps.setString(1, user);
         rs = ps.executeQuery();
 
         if (rs.next()) {
-            String senhaBanco = rs.getString("senha");
+            String senhaBanco = rs.getString("cd_senha_funcionario");
 
             // Valida a senha diretamente (sem hash)
-            if (pass.equals(senhaBanco)) {
+            if (pass.equals(senhaBanco) ) {
                 // Popup de sucesso
                 Alert alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Login");
@@ -97,6 +97,14 @@ public class Login {
                 alert.setContentText("Usuário ou senha incorretos!");
                 alert.showAndWait();
             }
+
+        }else {
+            // Popup de erro: usuário não encontrado
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Erro de Login");
+            alert.setHeaderText(null);
+            alert.setContentText("Usuário ou senha incorretos!");
+            alert.showAndWait();
         }
     }
 }
