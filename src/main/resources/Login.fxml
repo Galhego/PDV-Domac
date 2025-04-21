@@ -11,14 +11,13 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-
-<BorderPane prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.pdvteste.Login">
+<BorderPane prefHeight="700.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.pdvteste.LoginController">
    <center>
       <FlowPane alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="700.0" prefWidth="1100.0" style="-fx-background-color: BB0505;" BorderPane.alignment="CENTER">
          <children>
                 <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" translateY="-166.0">
                     <image>
-                        <Image url="@images/logo_seu_coxinha.png" />
+                        <Image url="@org/example/pdvteste/images/logo_seu_coxinha.png" />
                     </image>
                <FlowPane.margin>
                   <Insets />

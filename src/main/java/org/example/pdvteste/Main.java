@@ -15,7 +15,7 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         // Carrega o arquivo FXML
-        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/Login.fxml"));
         stage.initStyle(StageStyle.TRANSPARENT); // Torna a janela transparente
 
         // Adicionando icone à hotbar

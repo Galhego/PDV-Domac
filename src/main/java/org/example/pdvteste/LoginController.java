@@ -2,13 +2,21 @@ package org.example.pdvteste;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -16,7 +24,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.Properties;
 
-public class Login {
+public class LoginController {
 
     @FXML
     private Button button;
@@ -33,6 +41,52 @@ public class Login {
         Stage stage = (Stage) fecharBtn.getScene().getWindow();
         stage.close();
     }
+
+    @FXML
+    public void joinVendas() throws IOException {
+        Stage stage = new Stage();
+
+        // Carrega o arquivo FXML
+        FXMLLoader fxmlLoader = new FXMLLoader(Main.class.getResource("/Vendas.fxml"));
+        stage.initStyle(StageStyle.TRANSPARENT); // Torna a janela transparente
+
+        // Adicionando icone à hotbar
+        Image icon = new Image(getClass().getResourceAsStream("/org/example/pdvteste/images/logo_seu_coxinha.png"));
+        stage.getIcons().add(icon);
+
+        // Cria a cena com fundo transparente
+        Scene scene = new Scene(fxmlLoader.load(), 1100, 700);
+        scene.setFill(Color.TRANSPARENT); // Define o fundo como transparente
+
+        // Define um retângulo com cantos arredondados como máscara (clip)
+        Rectangle clip = new Rectangle();
+        clip.setWidth(scene.getWidth());
+        clip.setHeight(scene.getHeight());
+        clip.setArcWidth(30); // Raio horizontal dos cantos arredondados
+        clip.setArcHeight(30); // Raio vertical dos cantos arredondados
+
+        // Aplica o clip ao root da cena
+        Region root = (Region) scene.getRoot();
+        root.setClip(clip);
+
+        // Adiciona a cena à janela
+        stage.setScene(scene);
+        stage.show();
+
+        // Permite mover a janela clicando e arrastando
+        scene.setOnMousePressed(event -> {
+            xOffset = event.getSceneX();
+            yOffset = event.getSceneY();
+        });
+
+        scene.setOnMouseDragged(event -> {
+            stage.setX(event.getScreenX() - xOffset);
+            stage.setY(event.getScreenY() - yOffset);
+        });
+    }
+
+    private double xOffset = 0;
+    private double yOffset = 0;
 
     @FXML
     private void userLogin(ActionEvent event) throws Exception {
@@ -58,7 +112,7 @@ public class Login {
 
         Properties props = new Properties();
         // Carrega o arquivo db.properties dos recursos do projeto
-        InputStream input = Login.class.getClassLoader().getResourceAsStream("db.properties");
+        InputStream input = LoginController.class.getClassLoader().getResourceAsStream("db.properties");
         if (input == null) {
             throw new Exception("Arquivo db.properties não encontrado.");
         }
@@ -93,12 +147,16 @@ public class Login {
 
             // Valida a senha diretamente (sem hash)
             if (pass.equals(senhaBanco) ) {
-                // Popup de sucesso
+                /* Popup de sucesso
                 Alert alert = new Alert(AlertType.INFORMATION);
                 alert.setTitle("Login");
                 alert.setHeaderText(null);
                 alert.setContentText("Login bem-sucedido!");
                 alert.showAndWait();
+                */
+                Stage stage = (Stage) button.getScene().getWindow();
+                stage.close();
+                joinVendas();
             } else {
                 // Popup de erro
                 Alert alert = new Alert(AlertType.ERROR);
