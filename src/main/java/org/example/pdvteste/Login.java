@@ -7,6 +7,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.InputStream;
 import java.sql.Connection;
@@ -23,6 +24,15 @@ public class Login {
     private TextField username;
     @FXML
     private PasswordField password;
+    @FXML
+    private Button fecharBtn;
+
+
+    @FXML
+    public void fecharAction(ActionEvent e) {
+        Stage stage = (Stage) fecharBtn.getScene().getWindow();
+        stage.close();
+    }
 
     @FXML
     private void userLogin(ActionEvent event) throws Exception {
