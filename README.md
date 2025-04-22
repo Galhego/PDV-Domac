@@ -30,9 +30,10 @@ O 'Meu Coxinha' é um software feito para ser um sistema de PDV para a empresa '
 ---
 
 ## **Tecnologias Utilizadas**
-- ***Front-end***: [HTML5, CSS, JS, JAVAFX E MAVEN]
+- ***Front-end***: [HTML5, CSS, JS]
 - ***Back-end***: [JAVA]
 - ***Banco de dados***: [MYSQL]
+- ***Ferramenta de Build***: [MAVEN]
 
 ---
 
