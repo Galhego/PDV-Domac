@@ -120,7 +120,14 @@
             </Button>
             <BorderPane prefHeight="213.0" prefWidth="247.0">
                <center>
-                  <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: FFFFFF; -fx-border-image-width: 1px; -fx-border-color: black;" BorderPane.alignment="CENTER" />
+                  <AnchorPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: FFFFFF; -fx-border-image-width: 1px; -fx-border-color: black;" BorderPane.alignment="CENTER">
+                     <children>
+                        <Button layoutX="91.0" layoutY="144.0" mnemonicParsing="false" style="-fx-border-width: 1px; -fx-border-color: black; -fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: EEFF00;" text="Limpar">
+                           <font>
+                              <Font name="System Bold" size="14.0" />
+                           </font>
+                        </Button>
+                     </children></AnchorPane>
                </center>
                <top>
                   <AnchorPane prefHeight="31.0" prefWidth="248.0" style="-fx-background-color: D9D9D9; -fx-border-width: 1px; -fx-border-color: black;" BorderPane.alignment="CENTER">
@@ -158,11 +165,6 @@
                <font>
                   <Font name="System Bold" size="14.0" />
                </font></Button>
-            <Button mnemonicParsing="false" style="-fx-border-width: 1px; -fx-border-color: black; -fx-background-radius: 5; -fx-border-radius: 5; -fx-background-color: EEFF00;" text="Limpar">
-               <font>
-                  <Font name="System Bold" size="14.0" />
-               </font>
-            </Button>
          </children>
       </VBox>
    </right>
