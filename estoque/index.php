@@ -51,8 +51,8 @@ $itens = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 <i class="fas fa-edit"></i>
                             </a>
 
-                            <!-- Novo botão -->
-                            <a href="add_quantity.php?id=<?= $item['id'] ?>" class="text-green-600 hover:text-green-800 mr-2" title="Acescentar Quantidade">
+                            <!-- Botão acrescentar quantidade -->
+                            <a href="add_quantity.php?id=<?= $item['id'] ?>" class="text-green-600 hover:text-green-800 mr-2" title="Acrescentar Quantidade">
                                 <i class="fas fa-plus-circle"></i>
                             </a>
 
