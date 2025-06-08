@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['user_id'])) {
+    header('Location: ../login.php');
+    exit;
+}
+
 require_once '../config/db.php';
 require_once '../includes/header.php';
 
@@ -10,17 +16,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $pdo->beginTransaction();
 
-        $data = date('Y-m-d');
-        $hora = date('H:i:s');
+        $data    = date('Y-m-d');
+        $hora    = date('H:i:s');
         $cliente = $_POST['cliente'];
-        $total = 0;
+        $total   = 0;
 
         $produtos_selecionados = $_POST['produtos'] ?? [];
 
-        // Calcular total com base nas quantidades
+        // Calcular total
         foreach ($produtos_selecionados as $produto_id) {
             $qtd = $_POST['quantidade'][$produto_id] ?? 0;
-
             if (!is_numeric($qtd) || $qtd <= 0) {
                 throw new Exception("Quantidade inválida para o produto ID: $produto_id");
             }
@@ -31,33 +36,44 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception("Produto não encontrado: $produto_id");
             }
 
-            $preco = floatval($produtos[$key]['preco']);
+            $preco  = floatval($produtos[$key]['preco']);
             $total += $preco * $qtd;
         }
 
-        // Inserir venda
-        $stmt_venda = $pdo->prepare("INSERT INTO vendas (data, hora, cliente, total) VALUES (?, ?, ?, ?)");
+        // Inserir venda COM hora
+        $stmt_venda = $pdo->prepare(
+            "INSERT INTO vendas (data, hora, cliente, total)
+             VALUES (?, ?, ?, ?)"
+        );
         $stmt_venda->execute([$data, $hora, $cliente, $total]);
         $venda_id = $pdo->lastInsertId();
 
-        // Inserir produtos da venda
-        $stmt_produto = $pdo->prepare("
-            INSERT INTO venda_produtos (venda_id, produto_id, quantidade, preco_unitario) 
-            VALUES (?, ?, ?, ?)
-        ");
+        // Inserir itens da venda e reduzir estoque
+        $stmt_produto = $pdo->prepare(
+            "INSERT INTO venda_produtos (venda_id, produto_id, quantidade, preco_unitario)
+             VALUES (?, ?, ?, ?)"
+        );
+        $stmt_estoque = $pdo->prepare(
+            "UPDATE estoque 
+             SET quantidade = quantidade - :qtd 
+             WHERE item = (
+               SELECT produto FROM produtos WHERE id = :prod_id
+             )"
+        );
 
         foreach ($produtos_selecionados as $produto_id) {
-            $qtd = $_POST['quantidade'][$produto_id] ?? 0;
-
-            if (!is_numeric($qtd) || $qtd <= 0) continue;
-
-            $qtd = intval($qtd);
+            $qtd = intval($_POST['quantidade'][$produto_id]);
             $key = array_search($produto_id, array_column($produtos, 'id'));
-
-            if ($key === false) continue;
-
             $preco = floatval($produtos[$key]['preco']);
+
+            // Inserir registro na tabela venda_produtos
             $stmt_produto->execute([$venda_id, $produto_id, $qtd, $preco]);
+
+            // Reduzir quantidade no estoque (por nome de item)
+            $stmt_estoque->execute([
+                ':qtd'     => $qtd,
+                ':prod_id' => $produto_id
+            ]);
         }
 
         $pdo->commit();
@@ -80,97 +96,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-4">
                 <label class="block text-gray-700 mb-2" for="cliente">Cliente</label>
                 <input type="text" name="cliente" required
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-800">
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-800">
             </div>
 
             <div class="mb-4">
-                <label class="block text-gray-700 mb-2" for="produtos">Produtos</label>
+                <label class="block text-gray-700 mb-2" for="produto-select">Produtos</label>
                 <select id="produto-select"
-                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-800">
+                    class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-800">
                     <option value="">Selecione um produto</option>
-                    <?php foreach ($produtos as $produto): ?>
-                        <option value="<?= $produto['id'] ?>">
-                            <?= htmlspecialchars($produto['produto']) ?> - R$ <?= number_format($produto['preco'], 2, ',', '.') ?>
-                        </option>
+                    <?php foreach ($produtos as $p): ?>
+                        <option value="<?= $p['id'] ?>"><?= htmlspecialchars($p['produto']) ?> – R$ <?= number_format($p['preco'], 2, ',', '.') ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
 
-            <!-- Lista de Itens Selecionados -->
             <div id="itens-selecionados" class="mb-4">
-                <h3 class="text-lg font-semibold text-gray-700 mb-2">Itens Adicionados</h3>
+                <h3 class="text-lg font-semibold mb-2">Itens Adicionados</h3>
                 <ul id="lista-itens" class="space-y-2"></ul>
             </div>
 
-            <input type="hidden" name="produtos[]" id="produtos-input">
+            <div id="input-hidden-container"></div>
 
             <div class="flex justify-end">
-                <a href="index.php" class="mr-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg">
-                    Cancelar
-                </a>
-                <button type="submit" class="bg-red-800 hover:bg-red-700 text-yellow-400 font-bold py-2 px-4 rounded-lg">
-                    Salvar Venda
-                </button>
+                <a href="index.php" class="mr-2 bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded-lg">Cancelar</a>
+                <button type="submit" class="bg-red-800 hover:bg-red-700 text-yellow-400 font-bold py-2 px-4 rounded-lg">Salvar Venda</button>
             </div>
         </form>
     </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const select = document.getElementById('produto-select');
-        const listaItens = document.getElementById('lista-itens');
+document.addEventListener('DOMContentLoaded', () => {
+  const select = document.getElementById('produto-select');
+  const lista = document.getElementById('lista-itens');
+  const container = document.getElementById('input-hidden-container');
+  const produtos = <?= json_encode($produtos) ?>;
+  const itens = {};
 
-        const itensSelecionados = {};
-        const produtos = <?= json_encode($produtos) ?>; // Produtos em JSON
-
-        function atualizarInputs() {
-            const produtosArray = Object.keys(itensSelecionados);
-            document.getElementById('produtos-input').value = produtosArray.join(',');
-        }
-
-        function adicionarItem(id) {
-            if (itensSelecionados[id]) return;
-
-            const produto = produtos.find(p => p.id == id); // Busca o produto correto
-            if (!produto) return;
-
-            itensSelecionados[id] = 1;
-
-            const li = document.createElement('li');
-            li.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-lg';
-            li.setAttribute('data-id', id);
-
-            li.innerHTML = `
-                <span class="font-medium">${produto.produto}</span>
-                <div class="flex items-center space-x-2">
-                    <input type="number" name="quantidade[${id}]" min="1" value="1"
-                        class="w-16 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-800">
-                    <button type="button" onclick="removerItem(this, ${id})"
-                        class="text-red-600 hover:text-red-800">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `;
-
-            listaItens.appendChild(li);
-            atualizarInputs();
-        }
-
-        window.removerItem = function(button, id) {
-            delete itensSelecionados[id];
-            button.closest('li').remove();
-            atualizarInputs();
-        }
-
-        select.addEventListener('change', function () {
-            const id = this.value;
-            if (id) {
-                adicionarItem(id);
-                this.value = ''; // Limpar seleção
-            }
-        });
+  function atualizar() {
+    container.innerHTML = '';
+    Object.keys(itens).forEach(id => {
+      const inp = document.createElement('input');
+      inp.type = 'hidden'; inp.name = 'produtos[]'; inp.value = id;
+      container.appendChild(inp);
     });
+  }
+
+  function addItem(id) {
+    if (itens[id]) return;
+    const prod = produtos.find(p => p.id == id);
+    if (!prod) return;
+    itens[id]=true;
+    const li = document.createElement('li');
+    li.setAttribute('data-id', id);
+    li.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-lg';
+    li.innerHTML = `
+      <span class="font-medium">${prod.produto}</span>
+      <div class="flex items-center space-x-2">
+        <input type="number" name="quantidade[${id}]" min="1" value="1" class="w-16 px-2 py-1 border rounded focus:outline-none focus:ring-2 focus:ring-red-800">
+        <button type="button" class="text-red-600 hover:text-red-800" onclick="rmItem(${id})"><i class="fas fa-trash"></i></button>
+      </div>
+    `;
+    lista.appendChild(li);
+    atualizar();
+  }
+
+  window.rmItem=id=>{delete itens[id]; lista.querySelector(`li[data-id="${id}"]`).remove(); atualizar();};
+  select.addEventListener('change',()=>{if(select.value){addItem(select.value); select.value='';}});
+});
 </script>
 
 <?php require_once '../includes/footer.php'; ?>

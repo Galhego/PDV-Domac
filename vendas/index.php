@@ -14,7 +14,7 @@ if (!isset($_SESSION['user_id'])) {
 $stmt = $pdo->query("
     SELECT 
         v.id, 
-        v.data, 
+        v.data,
         v.hora,
         v.cliente, 
         GROUP_CONCAT(CONCAT(p.produto, ' (', vp.quantidade, ')') SEPARATOR ' | ') AS produtos,
@@ -56,24 +56,33 @@ $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     </thead>
                     <tbody class="divide-y divide-gray-200">
                         <?php foreach ($vendas as $venda): ?>
-                        <tr class="hover:bg-gray-50 cursor-pointer" onclick='showProducts(<?= json_encode([
-                                'id' => $venda['id'],
-                                'produtos' => explode(' | ', $venda['produtos']),
-                                'total' => $venda['total'],
-                                'cliente' => $venda['cliente'],
-                                'data' => date('d/m/Y', strtotime($venda['data'])),
-                                'hora' => date('H:i', strtotime($venda['hora']))
-                            ]) ?>)'>
+                            <?php
+                                // Formata data e hora para exibição
+                                $data_fmt = date('d/m/Y', strtotime($venda['data']));
+                                $hora_fmt = date('H:i',  strtotime($venda['hora']));
+                                // Prepara array para o modal, já formatado
+                                $jsVenda = [
+                                    'id'       => $venda['id'],
+                                    'produtos' => explode(' | ', $venda['produtos'] ?: ''),
+                                    'total'    => number_format($venda['total'], 2, ',', '.'),
+                                    'cliente'  => $venda['cliente'],
+                                    'data'     => $data_fmt,
+                                    'hora'     => $hora_fmt
+                                ];
+                            ?>
+                        <tr class="hover:bg-gray-50 cursor-pointer"
+                            onclick='showProducts(<?= json_encode($jsVenda, JSON_HEX_APOS|JSON_HEX_QUOT) ?>)'>
                             <td class="py-4 px-4"><?= $venda['id'] ?></td>
-                            <td class="py-4 px-4"><?= date('d/m/Y', strtotime($venda['data'])) ?></td>
-                            <td class="py-4 px-4"><?= date('H:i', strtotime($venda['hora'])) ?></td>
+                            <td class="py-4 px-4"><?= $data_fmt ?></td>
+                            <td class="py-4 px-4"><?= $hora_fmt ?></td>
                             <td class="py-4 px-4"><?= htmlspecialchars($venda['cliente']) ?></td>
                             <td class="py-4 px-4">R$ <?= number_format($venda['total'], 2, ',', '.') ?></td>
                             <td class="py-4 px-4 text-right">
                                 <a href="edit.php?id=<?= $venda['id'] ?>" class="text-yellow-600 hover:text-yellow-800 mr-2">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <a href="delete.php?id=<?= $venda['id'] ?>" class="text-red-600 hover:text-red-800" onclick="return confirm('Tem certeza que deseja excluir esta venda?')">
+                                <a href="delete.php?id=<?= $venda['id'] ?>" class="text-red-600 hover:text-red-800"
+                                   onclick="return confirm('Tem certeza que deseja excluir esta venda?')">
                                     <i class="fas fa-trash"></i>
                                 </a>
                             </td>
@@ -103,15 +112,15 @@ $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
     function showProducts(venda) {
         const productList = document.getElementById('productList');
         productList.innerHTML = '';
-        
-        // Exibir cliente e data
+
+        // Exibir informações da venda
         const info = document.createElement('div');
         info.className = 'text-gray-700 font-semibold mb-2';
-        info.textContent = `Cliente: ${venda.cliente} - ${venda.data} ${venda.hora}`;
+        info.textContent = `Cliente: ${venda.cliente} — ${venda.data} ${venda.hora} — Total: R$ ${venda.total}`;
         productList.appendChild(info);
 
         // Exibir produtos
-        if (Array.isArray(venda.produtos)) {
+        if (venda.produtos.length) {
             venda.produtos.forEach(produto => {
                 const div = document.createElement('div');
                 div.className = 'text-gray-700';
@@ -124,7 +133,7 @@ $vendas = $stmt->fetchAll(PDO::FETCH_ASSOC);
             div.textContent = 'Nenhum produto registrado.';
             productList.appendChild(div);
         }
-        
+
         document.getElementById('productModal').classList.remove('hidden');
     }
 
