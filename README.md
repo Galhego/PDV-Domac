@@ -36,10 +36,12 @@ O 'Meu Netinho' é um software feito para ser um sistema de PDV genérico, utili
 ### **Pré-requisitos**
 
 #### **Certifique-se de ter instalado:**
-- ***[XAMP]***
+- ***[VisualStudioCode]***
+- ***[MySQL WorkBench]***
+- ***[XAMPP]***
 
 ### **Como Executar o Projeto:**
-
+Utilizamos a última versão do Visual Studio Code e Xampp. Ao clonar o projeto do GitHub para a IDE deve-se colocar os arquivos do projeto dentro da pasta criada manualmente chamada PDV-GENERICO no htdocs/prog do local de instalação do xampp. Utilizamos para o banco de dados o MySQL Workbench.
 ---
 
   ## Autores
