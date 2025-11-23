@@ -1,12 +1,9 @@
     </div>
 
-    <!-- Modal Structure -->
     <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden" id="modal-overlay">
-        <!-- Conteúdo dos modais será inserido aqui -->
     </div>
 
     <script>
-        // Função para alternar a sidebar
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const mainContent = document.getElementById('main-content');

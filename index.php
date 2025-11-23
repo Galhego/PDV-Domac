@@ -44,7 +44,7 @@ if (isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Seu Coxinha - Login</title>
+    <title>Meu Coxinha - Login</title>
     <script src="https://cdn.tailwindcss.com "></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css ">
     <style>
@@ -105,8 +105,8 @@ if (isset($_SESSION['user_id'])) {
                     <i class="fas fa-drumstick-bite"></i>
                 </div>
                 <h1 class="text-3xl font-bold text-white">
-                    <span class="block text-yellow-300 text-sm font-normal">PDV GENÉRICO</span>
-                    SEU NETINHO
+                    <span class="block text-yellow-300 text-sm font-normal">PDV DO SEU COXINHA</span>
+                    MEU COXINHA
                 </h1>
             </div>
         </div>
@@ -152,7 +152,7 @@ if (isset($_SESSION['user_id'])) {
         
         <!-- Footer -->
         <div class="bg-gray-50 px-8 py-4 border-t border-gray-200 text-center">
-            <p class="text-xs text-gray-500">© 2027 Seu Netinho. Todos os direitos reservados.</p>
+            <p class="text-xs text-gray-500">© 2027 Meu Coxinha. Todos os direitos reservados.</p>
         </div>
     </div>
     
