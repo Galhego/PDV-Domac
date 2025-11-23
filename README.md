@@ -1,4 +1,4 @@
-# **SISTEMA DE PDV DO GENÉRICO**
+# **SISTEMA DE PDV DO SEU COXINHA**
 
 [![Status do Projeto](https://img.shields.io/badge/status-em%20desenvolvimento-yellow.svg)]()
 
@@ -15,7 +15,7 @@
 ---
 
 ## **Descrição**
-O 'Meu Netinho' é um software feito para ser um sistema de PDV genérico, utilizado para fazer controle de vendas e estoque  além de integrar todas as informaçoes em um único local.
+O 'Meu Coxinha' é um software feito para ser um sistema de PDV personalizado, utilizado para fazer controle de vendas e estoque além de integrar todas as informações em um único local.
 ---
 
 ## **Funcionalidades**
